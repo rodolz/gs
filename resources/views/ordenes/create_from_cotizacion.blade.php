@@ -39,7 +39,7 @@
                             <div class="form-group col-lg-8 col-md-8 col-sm-9 col-xs-12">
                                 <h2 class="bold">Cotizacion #{{ $cotizacion->num_cotizacion }}</h2>
                                 <div class="controls">
-                                    {!! Form::label('idCotizacion', "ID #".$cotizacion->id, ['id' => 'cotizacion', 'class' => 'form-control top15']) !!}
+                                    {!! Form::label('idCotizacion', $cotizacion->id, ['id' => 'cotizacion', 'class' => 'form-control top15 hidden']) !!}
                                 </div>
                             </div>
                         </div>
@@ -285,7 +285,7 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },  
                     type : 'POST',
-                    url  : '/nueva_orden_cotizacion',
+                    url  : '/nueva_ordenC',
                     data : {data: jsondata, idCliente: idCliente, repartidores: repartidores, idOrden: idOrden, idCotizacion: idCotizacion},
                     success: function( data, textStatus, jQxhr ){
                         if(data === "ok"){

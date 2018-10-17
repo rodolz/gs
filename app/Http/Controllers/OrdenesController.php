@@ -431,6 +431,102 @@ class OrdenesController extends Controller
         return "ok";
     }
 
+    public function nueva_ordenC(Request $request){
+        $precio_total = 0;
+        $repartidores = User::whereIn('id',$request->repartidores)->get();
+        $cliente = Cliente::where('id', $request->idCliente)->first();
+        $cotizacion = Cotizacion::where('id',$request->idCotizacion)->first();
+        $data = json_decode($request->data, true);
+        $productos = array();
+        // Inicio de la transaccion
+        DB::beginTransaction();
+        try{
+            foreach ($data as $producto) {
+                $producto['precio_final'] = str_replace(',', '', $producto['precio_final']);
+                $producto_db = Producto::where('id',$producto['id'])->first();
+                $producto_db->cantidad = $producto['cantidad'];
+                $precio_x_cantidad = $producto['precio_final'] * $producto_db->cantidad;
+                $precio_total = $precio_total + $precio_x_cantidad;
+                array_push($productos,$producto_db);
+            }
+            foreach ($productos as $producto) {
+                if($producto->idCategoria !== 8 ){    
+                    //Buscar la cantidad disponible de cada producto
+                    $cantidad_disponible = Producto::where('id',$producto->id)->value('cantidad');
+                    //Determinar la cantidad final del producto
+                    $cantidad_final = $cantidad_disponible - $producto->cantidad;
+                    //Modificar la cantidad del producto en la db
+                    Producto::where('id',$producto->id)->update(array('cantidad' => $cantidad_final));
+                }
+            }
+
+            //INICIO - INSERTAR la nueva orden en la DB
+            $orden_max = DB::table('ordens')->max('num_orden');
+            // $cond = 1;
+            if(is_null($orden_max)){
+                $num_orden = 1;
+            }
+            else{
+                // while($cond <= $orden_max){
+                //     $orden_faltante = Orden::where('num_orden',$cond)->first();
+                //     if(is_null($orden_faltante)){
+                //         $num_orden = $cond;
+                //         break;
+                //     }
+                //     elseif($cond == $orden_max){
+                //         $num_orden = $orden_max + 1;   
+                //     }
+                //     $cond++;
+                // }
+                $num_orden = $orden_max + 1;
+            }
+            $nueva_orden = Orden::create([
+                'num_orden' => $num_orden,
+                'idCliente' => $cliente->id,
+                'idUsuario' => Auth::user()->id,
+                'monto_orden' => $precio_total,
+                'idOrdenEstado' => 1
+            ]);
+            // FIN - Insertar la orden en la DB
+
+
+            $cotizacion->idCotizacionEstado = 2;
+            $cotizacion->save();
+            // INICIO - INSETAR CADA PRODUCTO EN ORDENES_PRODUCTOS
+            $orden_max_id = DB::table('ordens')->max('id');
+            foreach ($data as $producto) {
+                $producto['precio_final'] = str_replace(',', '', $producto['precio_final']);
+                DB::table('ordenes_productos')->insert(
+                    [
+                    'idOrden' => $orden_max_id,
+                    'idProducto' => $producto['id'],
+                    'cantidad_producto' => $producto['cantidad'],
+                    'precio_final' => $producto['precio_final']
+                    ]
+                );
+            }
+            // FIN - INSETAR CADA PRODUCTO EN ORDENES_PRODUCTOS
+
+            // INICIO - INSETAR CADA REPARTIDOR EN ORDENES_REPARTIDORES
+            foreach ($repartidores as $repartidor) {
+                DB::table('ordenes_repartidores')->insert(
+                    [
+                    'idOrden' => $orden_max_id, 
+                    'idRepartidor' => $repartidor->id
+                    ]
+                );
+            }
+            // FIN - INSERTAR CADA REPARTIDOR EN ORDENES_REPARTIDORES
+        }   
+        catch (\Exception $e) {
+             DB::rollback();
+             return $e->getMessage();
+        }
+        // SE hace el commit
+        DB::commit();
+        return "ok";
+    }
+
     public function index(Request $request)
     {
         $ordenes = Orden::orderBy('num_orden','DESC')->paginate(10);

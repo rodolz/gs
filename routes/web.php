@@ -81,6 +81,7 @@ Auth::routes();
 				]]);
 				Route::post('nueva_orden', 'OrdenesController@nueva_orden');
 				Route::post('update_orden', 'OrdenesController@update_orden');
+				Route::post('nueva_ordenC', 'OrdenesController@nueva_ordenC');
 				Route::get('/ordenes/edit_from_cotizacion/{idCotizacion}', [
 					'as' => 'ordenes.create_from_cotizacion',
 					'uses' => 'OrdenesController@nueva_orden_cotizacion'
