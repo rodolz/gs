@@ -18,6 +18,7 @@ return array(
     'CreateOrdenesTable' => $baseDir . '/database/migrations/2016_12_25_004606_create_ordenes_table.php',
     'CreatePagosTable' => $baseDir . '/database/migrations/2017_04_18_022608_create_pagos_table.php',
     'CreatePasswordResetsTable' => $baseDir . '/database/migrations/2014_10_12_100000_create_password_resets_table.php',
+    'CreateProveedorsTable' => $baseDir . '/database/migrations/2018_10_17_124807_create_proveedors_table.php',
     'CreateRepartidoresTable' => $baseDir . '/database/migrations/2017_01_01_144818_create_repartidores_table.php',
     'CreateTipoPagosTable' => $baseDir . '/database/migrations/2017_04_18_022601_create_tipo_pagos_table.php',
     'CreateUsersRolesTable' => $baseDir . '/database/migrations/2017_04_13_233424_create_users_roles_table.php',
