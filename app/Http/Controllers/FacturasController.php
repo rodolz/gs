@@ -53,8 +53,7 @@ class FacturasController extends Controller
         Fpdf::SetTopMargin(1);
         Fpdf::AddPage();
         Fpdf::SetFont('Arial','B', 11);
-        $y = Fpdf::GetY()+10;
-        Fpdf::Image("assets/images/cintillo_control.jpg",0,0,216,45);
+        Fpdf::Image("assets/images/cintillo_control.jpg",0,-4,216,45);
         // $nueva_y = Fpdf::GetY();
         Fpdf::SetY(40);
         Fpdf::SetX(160);
