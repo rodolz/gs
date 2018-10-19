@@ -175,4 +175,14 @@ Auth::routes();
 			Route::post('stats/resumen','StatsController@estadisticas');
 		});
 
+		// RUTAS DE PROVEEDORES
+		Route::group(['middleware' => ['permission:manage-clientes']], function(){
+			Route::get('proveedores','ProveedorController@index')->name('proveedores.index');
+			Route::group(['middleware' => ['permission:editar-cliente']], function(){
+				Route::resource('proveedores', 'ProveedorController', ['except' => [
+					    'index',
+					]]);
+			});
+		});
+
 });

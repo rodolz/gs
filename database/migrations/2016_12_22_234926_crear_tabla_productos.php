@@ -19,7 +19,7 @@ class CrearTablaProductos extends Migration
             $table->string('codigo')->unique();
             $table->string('descripcion');
             $table->string('medidas');
-            $table->float('precio',10,2);
+            $table->double('precio',13,2);
             $table->integer('cantidad');
             $table->timestamps();
         });

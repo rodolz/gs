@@ -4,20 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Proveedor;
 
-class ProveedorController extends Controller
+class ProductoProveedorController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $proveedores = Proveedor::orderBy('id','DESC')->paginate(10);
-        return view('proveedores.index',compact('proveedores'))
-            ->with('i', ($request->input('page', 1) - 1) * 10);
+        //
     }
 
     /**
@@ -27,7 +24,7 @@ class ProveedorController extends Controller
      */
     public function create()
     {
-        return view('proveedores.create');
+        //
     }
 
     /**
@@ -38,19 +35,7 @@ class ProveedorController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'email' => 'required|email',
-            'website' => 'required',
-            'address' => 'required',
-            'country' => 'required',
-            'city' => 'required',
-            'postcode' => 'required',
-        ]);
-
-        Proveedor::create($request->all());
-        return redirect()->route('proveedores.index')
-                        ->with('success','Proveedor Agregado!');
+        //
     }
 
     /**
